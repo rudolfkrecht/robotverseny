@@ -2,6 +2,8 @@
 
 [![Static Badge](https://img.shields.io/badge/ROS_2-Humble-34aec5)](https://docs.ros.org/en/humble/)
 
+![alt text](img/gazebo_and_rviz01.png)
+
 ## Clone 
 
 ``` bash
