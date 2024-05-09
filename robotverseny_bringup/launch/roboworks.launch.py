@@ -21,7 +21,7 @@ from launch.actions import DeclareLaunchArgument
 from launch.actions import IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution
 
 from launch_ros.actions import Node
 
@@ -40,16 +40,22 @@ def generate_launch_description():
     with open(sdf_file, 'r') as infp:
         robot_desc = infp.read()
 
+    sdf_path = PathJoinSubstitution([
+            pkg_project_gazebo,
+            'worlds',
+            'roboworks.sdf', 
+        ])
+    unpaused = TextSubstitution(text='r') 
+    gz_args_concat = [sdf_path] ## TODO: merge unpaused and sdf_path
+    print(type(sdf_path))
+
     # Setup to launch the simulator and Gazebo world
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')),
-        launch_arguments={'gz_args': PathJoinSubstitution([
-            pkg_project_gazebo,
-            'worlds',
-            'roboworks.sdf'
-        ])}.items(),
-    )
+        launch_arguments={'gz_args': gz_args_concat}.items())
+    ## -r means to run the simulation unpaused
+
 
     # Takes the description and joint angles as inputs and publishes the 3D poses of the robot links
     robot_state_publisher = Node(
